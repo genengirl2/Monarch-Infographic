@@ -1,465 +1,659 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Save the Monarchs Infographic</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #F7F7F7;
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 450px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 350px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-                max-height: 400px;
-            }
-        }
-        .flow-arrow {
-            content: '';
-            position: absolute;
-            width: 2px;
-            background-color: #FF6B6B;
-            z-index: 0;
-        }
-        .flow-arrow-right::after {
-            content: '▶';
-            position: absolute;
-            right: -8px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #FF6B6B;
-            font-size: 1rem;
-        }
-        .flow-arrow-down::after {
-            content: '▼';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #FF6B6B;
-            font-size: 1rem;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: #5B5F97;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-        }
-    </style>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2299.77">
+  <style type="text/css">
+    body {background-color: #f5f5f5}
+    span.s1 {font-kerning: none}
+  </style>
 </head>
-<body class="bg-[#F7F7F7] text-[#3D3D3D]">
-
-    <div class="container mx-auto p-4 md:p-8">
-
-        <header class="text-center mb-12">
-            <h1 class="text-4xl md:text-6xl font-black text-[#5B5F97] mb-2">SAVE THE MONARCH</h1>
-            <p class="text-lg md:text-xl text-gray-600">A species in peril and how you can be the hero they need.</p>
-        </header>
-
-        <div class="mb-12 rounded-lg overflow-hidden shadow-lg">
-            <img src="https://wildlife.org/wp-content/uploads/2017/01/monarch.png" alt="Monarch Butterfly" class="w-full h-auto object-cover">
-        </div>
-
-        <main class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-
-            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8 flex flex-col md:flex-row items-center gap-8">
-                <div class="text-center md:text-left flex-1">
-                    <h2 class="text-2xl font-bold text-[#5B5F97] mb-3">A Drastic Decline</h2>
-                    <p class="text-gray-700 mb-4">Over the past two decades, the monarch butterfly population has plummeted. This iconic species, known for its incredible 3-000-mile migration, is facing unprecedented threats that have pushed it to the brink.</p>
-                    <div class="text-7xl md:text-8xl font-black text-[#FFC700]">
-                        90%
-                    </div>
-                    <p class="text-lg font-bold text-gray-800">Population Lost</p>
-                    <div class="mt-8 text-center">
-                        <button id="generateFactBtn" class="bg-[#5B5F97] text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-[#FF6B6B] transition duration-300 ease-in-out">
-                            Get a ✨ Monarch Fact ✨
-                        </button>
-                        <div id="factOutput" class="mt-4 p-3 bg-gray-100 rounded-lg text-gray-800 italic">
-                            Click for an amazing fact!
-                        </div>
-                        <div id="factLoadingIndicator" class="hidden flex justify-center items-center mt-2">
-                            <div class="spinner mr-2"></div>
-                            Generating fact...
-                        </div>
-                    </div>
-                </div>
-                <div class="flex-1 w-full max-w-sm">
-                    <div class="chart-container">
-                        <canvas id="populationDeclineChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
-                <h2 class="text-2xl font-bold text-[#5B5F97] mb-4 text-center">Threats to Survival</h2>
-                <p class="text-gray-700 mb-6 text-center">Multiple factors contribute to the monarch's decline, primarily driven by human activity. The loss of their essential habitat is the most significant challenge they face.</p>
-                <div class="chart-container h-80 md:h-96 max-h-[450px]">
-                    <canvas id="threatsChart"></canvas>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
-                <h2 class="text-2xl font-bold text-[#5B5F97] mb-6 text-center">The Monarch Life Cycle</h2>
-                <p class="text-gray-700 mb-8 text-center">The monarch undergoes a complete metamorphosis, a remarkable transformation that is entirely dependent on a single plant: <span style="font-weight: bold; color: #FFC700;">milkweed.</span></p>
-                <img src="https://outdoornebraska.gov/wp-content/uploads/2023/03/monarch_male_female.png" alt="Adult Monarch Butterfly" class="w-full max-w-md mx-auto mb-8 rounded-lg shadow-md">
-                <div class="relative flex flex-col items-center space-y-8">
-                    <div class="relative z-10 w-full p-4 bg-[#FFC700] bg-opacity-20 rounded-lg border-l-4 border-[#FFC700]">
-                        <p class="font-bold text-lg">1. Egg 🥚</p>
-                        <p>Females lay tiny, off-white eggs exclusively on milkweed leaves.</p>
-                    </div>
-                    <div class="flow-arrow h-8 top-full left-1/2 -translate-x-1/2 -mt-8"></div>
-                    <div class="relative z-10 w-full p-4 bg-[#FF6B6B] bg-opacity-20 rounded-lg border-l-4 border-[#FF6B6B]">
-                        <p class="font-bold text-lg">2. Larva (Caterpillar) 🐛</p>
-                        <p>The caterpillar hatches and eats only milkweed, growing rapidly.</p>
-                    </div>
-                    <div class="flow-arrow h-8 top-full left-1/2 -translate-x-1/2 -mt-8"></div>
-                    <div class="relative z-10 w-full p-4 bg-[#5B5F97] bg-opacity-20 rounded-lg border-l-4 border-[#5B5F97]">
-                        <p class="font-bold text-lg">3. Pupa (Chrysalis) ✨</p>
-                        <p>It forms a beautiful green chrysalis, where the transformation occurs.</p>
-                    </div>
-                     <div class="flow-arrow h-8 top-full left-1/2 -translate-x-1/2 -mt-8"></div>
-                    <div class="relative z-10 w-full p-4 bg-green-500 bg-opacity-20 rounded-lg border-l-4 border-green-500">
-                        <p class="font-bold text-lg">4. Adult Butterfly 🦋</p>
-                        <p>The butterfly emerges, ready to feed on nectar and continue the cycle.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-2 bg-[#5B5F97] text-white rounded-lg shadow-lg p-6 md:p-8">
-                <h2 class="text-3xl font-black text-center mb-2 text-[#FFC700]">The Milkweed Connection</h2>
-                <p class="text-center text-lg max-w-3xl mx-auto">Milkweed is the nursery, shelter and its only food source; monarch caterpillars depend on 100% on milkweed. No milkweed means no monarchs. <span style="color: #FF6B6B; font-weight: bold;">Planting NATIVE milkweed</span> is the single most important action we can take to help save this species. Since we are in California, the <span class="font-bold text-[#FF6B6B] text-xl">SHOWY milkweed</span> is ideal and the second would be the <span class="font-bold text-[#FF6B6B] text-xl">BROADLEAF milkweed</span>. </p>
-            </div>
-
-            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8">
-                <h2 class="text-2xl font-bold text-[#FF6B6B] mb-4 text-center">The Dangers of Non-Native Milkweed</h2>
-                <p class="text-gray-700 mb-8 text-center">While any milkweed might seem helpful, non-native varieties, particularly <span class="font-bold">tropical milkweed</span> (Asclepias curassavica) picture shown below, can actually <strong>harm monarchs</strong>. Unlike native milkweeds that die back in winter, tropical milkweed often persists, disrupting the monarch's natural migratory cues. This can lead to monarchs staying in areas too cold for them or encouraging continuous breeding, which facilitates the spread of a debilitating parasite called *Ophryocystis elektroscirrha* (OE).</p>
-                <img src="https://static.wixstatic.com/media/0f6b2e_b46e4711a77247bc976715271cfbbdbc~mv2.jpg/v1/fill/w_768,h_768,al_c,q_85,enc_avif,quality_auto/0f6b2e_b46e4711a77247bc976715271cfbbdbc~mv2.jpg" alt="Tropical Milkweed Warning" class="w-full max-w-xl mx-auto mb-8 rounded-lg shadow-md">
-                <p class="text-center text-xl font-bold text-[#FF6B6B]">Always choose milkweed species native to your region to ensure the best support for monarch health and migration.</p>
-            </div>
-
-            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8">
-                <h2 class="text-2xl font-bold text-[#5B5F97] mb-4 text-center">How to Grow Milkweed</h2>
-                <p class="text-gray-700 mb-8 text-center">You can create a monarch sanctuary in your own garden, balcony, or community space. Follow these steps to cultivate the milkweed that monarchs need.</p>
-                <img src="https://cdn.shopify.com/s/files/1/1740/1449/files/MilkWeed_Header.jpg?v=1638393863" alt="Monarch Butterfly on Milkweed Plant" class="w-full max-w-xl mx-auto mb-8 rounded-lg shadow-md">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                    <div class="relative flex flex-col items-center">
-                        <div class="bg-gray-100 p-6 rounded-lg shadow-inner h-full">
-                            <div class="text-5xl mb-4">1️⃣</div>
-                            <h3 class="text-xl font-bold text-[#FF6B6B] mb-2">Stratify Your Seeds</h3>
-                            <p class="text-gray-600">Most milkweed seeds need a cold period. You can do this naturally by planting in the fall, or artificially by refrigerating seeds in a damp paper towel for 3-6 weeks.</p>
-                        </div>
-                        <div class="hidden md:block flow-arrow w-8 left-full top-1/2 -translate-y-1/2 -ml-4 flow-arrow-right"></div>
-                         <div class="md:hidden flow-arrow h-8 top-full left-1/2 -translate-x-1/2 -mt-4 flow-arrow-down"></div>
-                    </div>
-                    <div class="relative flex flex-col items-center">
-                        <div class="bg-gray-100 p-6 rounded-lg shadow-inner h-full">
-                            <div class="text-5xl mb-4">2️⃣</div>
-                            <h3 class="text-xl font-bold text-[#FFC700] mb-2">Plant with Care</h3>
-                            <p class="text-gray-600">Sow seeds in a sunny spot after the last frost. You can start them indoors 4-8 weeks early for a head start. Ensure your soil is well-draining.</p>
-                        </div>
-                         <div class="hidden md:block flow-arrow w-8 left-full top-1/2 -translate-y-1/2 -ml-4 flow-arrow-right"></div>
-                         <div class="md:hidden flow-arrow h-8 top-full left-1/2 -translate-x-1/2 -mt-4 flow-arrow-down"></div>
-                    </div>
-                    <div class="relative flex flex-col items-center">
-                        <div class="bg-gray-100 p-6 rounded-lg shadow-inner h-full">
-                            <div class="text-5xl mb-4">3️⃣</div>
-                            <h3 class="text-xl font-bold text-[#5B5F97] mb-2">Nurture & Watch</h3>
-                            <p class="text-gray-600">Keep the soil moist while seedlings are young. Avoid all pesticides. Soon, you'll provide a vital food source and witness the magic of the monarch life cycle firsthand!</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-10 text-center">
-                    <button id="generateTipBtn" class="bg-[#FF6B6B] text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-[#FFC700] transition duration-300 ease-in-out">
-                        Get a ✨ Milkweed Planting Tip ✨
-                    </button>
-                    <div id="tipOutput" class="mt-6 p-4 bg-gray-100 rounded-lg text-gray-800 italic">
-                        Click the button above for an AI-generated tip!
-                    </div>
-                    <div id="loadingIndicator" class="hidden flex justify-center items-center mt-4">
-                        <div class="spinner mr-2"></div>
-                        Generating tip...
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8 text-center">
-                <h2 class="text-2xl font-bold text-[#5B5F97] mb-4">Monarch Conservation in Action!</h2>
-                <p class="text-gray-700 mb-8 max-w-2xl mx-auto">Watch this video to see monarchs in their natural habitat and learn more about crucial conservation efforts.</p>
-                <div class="relative w-full max-w-xl mx-auto rounded-lg shadow-md overflow-hidden" style="padding-bottom: 56.25%;">
-                    <video controls class="absolute top-0 left-0 w-full h-full object-cover">
-                        <source src="Monarch_Butterfly_Conservation_Video.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            </div>
-
-        </main>
-
-        <footer class="text-center mt-12 pt-8 border-t border-gray-300">
-            <p class="text-gray-600">Your garden can be part of a continental recovery effort. Plant milkweed. Save the monarchs.</p>
-        </footer>
-
-    </div>
-
-    <script>
-        function wrapLabel(str, max_width) {
-            if (typeof str !== 'string' || str.length <= max_width) {
-                return str;
-            }
-            const words = str.split(' ');
-            let lines = [];
-            let current_line = '';
-            words.forEach(word => {
-                if ((current_line + ' ' + word).length > max_width) {
-                    lines.push(current_line);
-                    current_line = word;
-                } else {
-                    current_line = current_line ? current_line + ' ' + word : word;
-                }
-            });
-            lines.push(current_line);
-            return lines;
-        }
-
-        const tooltipTitleCallback = (tooltipItems) => {
-            const item = tooltipItems[0];
-            let label = item.chart.data.labels[item.dataIndex];
-            if (Array.isArray(label)) {
-                return label.join(' ');
-            }
-            return label;
-        };
-        
-        const populationDeclineCtx = document.getElementById('populationDeclineChart').getContext('2d');
-        new Chart(populationDeclineCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Population Lost', 'Remaining Population'],
-                datasets: [{
-                    data: [90, 10],
-                    backgroundColor: ['#FFC700', '#DDDDDD'], // Changed to orange here
-                    borderColor: ['#FFC700', '#DDDDDD'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%',
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: tooltipTitleCallback
-                        }
-                    }
-                }
-            }
-        });
-
-        const threatsCtx = document.getElementById('threatsChart').getContext('2d');
-        const originalThreatLabels = ['Habitat Loss (Milkweed Decline)', 'Pesticides & Herbicides', 'Climate Change', 'Natural Enemies & Disease'];
-        const wrappedThreatLabels = originalThreatLabels.map(label => wrapLabel(label, 16));
-
-        new Chart(threatsCtx, {
-            type: 'bar',
-            data: {
-                labels: wrappedThreatLabels,
-                datasets: [{
-                    label: 'Impact on Monarchs',
-                    data: [85, 65, 50, 30],
-                    backgroundColor: ['#FF6B6B', '#FFC700', '#5B5F97', '#9295C2'],
-                    borderColor: '#ffffff',
-                    borderWidth: 2,
-                    borderRadius: 5
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        grid: {
-                            display: false,
-                            drawBorder: false,
-                        },
-                        ticks: {
-                            display: false
-                        }
-                    },
-                    y: {
-                         grid: {
-                            display: false,
-                            drawBorder: false,
-                        },
-                        ticks: {
-                            color: '#3D3D3D',
-                            font: {
-                                size: 12,
-                                weight: 'bold'
-                            }
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: tooltipTitleCallback
-                        }
-                    }
-                }
-            }
-        });
-
-        const generateTipBtn = document.getElementById('generateTipBtn');
-        const tipOutput = document.getElementById('tipOutput');
-        const loadingIndicator = document.getElementById('loadingIndicator');
-
-        generateTipBtn.addEventListener('click', async () => {
-            tipOutput.textContent = '';
-            loadingIndicator.classList.remove('hidden');
-            generateTipBtn.disabled = true;
-
-            let chatHistory = [];
-            const prompt = "Provide a unique and actionable tip (1-2 sentences) for successfully growing milkweed or propagating it to help monarch butterflies. Focus on practical advice for a home gardener.";
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-            const payload = { contents: chatHistory };
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            let retries = 0;
-            const maxRetries = 5;
-            let delay = 1000; // 1 second
-
-            while (retries < maxRetries) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (response.status === 429) { // Too Many Requests
-                        retries++;
-                        await new Promise(res => setTimeout(res, delay));
-                        delay *= 2; // Exponential backoff
-                        continue;
-                    }
-
-                    const result = await response.json();
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        tipOutput.textContent = text;
-                    } else {
-                        tipOutput.textContent = 'Failed to generate tip. Please try again.';
-                    }
-                    break; // Exit loop on success
-                } catch (error) {
-                    retries++;
-                    if (retries < maxRetries) {
-                        await new Promise(res => setTimeout(res, delay));
-                        delay *= 2;
-                    } else {
-                        tipOutput.textContent = 'Error generating tip. Please check your connection.';
-                    }
-                }
-            }
-
-            loadingIndicator.classList.add('hidden');
-            generateTipBtn.disabled = false;
-        });
-
-        const generateFactBtn = document.getElementById('generateFactBtn');
-        const factOutput = document.getElementById('factOutput');
-        const factLoadingIndicator = document.getElementById('factLoadingIndicator');
-
-        generateFactBtn.addEventListener('click', async () => {
-            factOutput.textContent = '';
-            factLoadingIndicator.classList.remove('hidden');
-            generateFactBtn.disabled = true;
-
-            let chatHistory = [];
-            const prompt = "Provide a unique and interesting fact (1-2 sentences) about monarch butterflies.";
-            chatHistory.push({ role: "user", parts: [{ text: prompt }] });
-            const payload = { contents: chatHistory };
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            let retries = 0;
-            const maxRetries = 5;
-            let delay = 1000; // 1 second
-
-            while (retries < maxRetries) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (response.status === 429) { // Too Many Requests
-                        retries++;
-                        await new Promise(res => setTimeout(res, delay));
-                        delay *= 2; // Exponential backoff
-                        continue;
-                    }
-
-                    const result = await response.json();
-                    if (result.candidates && result.candidates.length > 0 &&
-                        result.candidates[0].content && result.candidates[0].content.parts &&
-                        result.candidates[0].content.parts.length > 0) {
-                        const text = result.candidates[0].content.parts[0].text;
-                        factOutput.textContent = text;
-                    } else {
-                        factOutput.textContent = 'Failed to generate fact. Please try again.';
-                    }
-                    break; // Exit loop on success
-                } catch (error) {
-                    retries++;
-                    if (retries < maxRetries) {
-                        await new Promise(res => setTimeout(res, delay));
-                        delay *= 2;
-                    } else {
-                        factOutput.textContent = 'Error generating fact. Please check your connection.';
-                    }
-                }
-            }
-
-            factLoadingIndicator.classList.add('hidden');
-            generateFactBtn.disabled = false;
-        });
-    </script>
-
+<body>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1">&lt;!DOCTYPE html&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1">&lt;html lang="en"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1">&lt;head&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;title&gt;Save the Monarchs Infographic&lt;/title&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdn.jsdelivr.net/npm/chart.js"&gt;&lt;/script&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&amp;display=swap" rel="stylesheet"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;style&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>body {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>font-family: 'Inter', sans-serif;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #F7F7F7;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>.chart-container {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>position: relative;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>width: 100%;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>max-width: 450px;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>margin-left: auto;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>margin-right: auto;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>height: 300px;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>max-height: 350px;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>@media (min-width: 768px) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>.chart-container {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>height: 350px;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>max-height: 400px;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>.flow-arrow {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>content: '';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>position: absolute;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>width: 2px;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>background-color: #FF6B6B;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>z-index: 0;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>.flow-arrow-right::after {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>content: '▶';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>position: absolute;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>right: -8px;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>top: 50%;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>transform: translateY(-50%);</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>color: #FF6B6B;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 1rem;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>.flow-arrow-down::after {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>content: '▼';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>position: absolute;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>bottom: -8px;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>left: 50%;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>transform: translateX(-50%);</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>color: #FF6B6B;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>font-size: 1rem;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>@keyframes spin {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>0% { transform: rotate(0deg); }</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>100% { transform: rotate(360deg); }</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>.spinner {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>border: 4px solid rgba(0, 0, 0, 0.1);</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>border-left-color: #5B5F97;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>border-radius: 50%;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>width: 24px;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>height: 24px;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>animation: spin 1s linear infinite;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1">&lt;/head&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1">&lt;body class="bg-[#F7F7F7] text-[#3D3D3D]"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;div class="container mx-auto p-4 md:p-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>&lt;header class="text-center mb-12"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;h1 class="text-4xl md:text-6xl font-black text-[#5B5F97] mb-2"&gt;SAVE THE MONARCH&lt;/h1&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;p class="text-lg md:text-xl text-gray-600"&gt;A species in peril and how you can be the hero they need.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/header&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>&lt;div class="mb-12 rounded-lg overflow-hidden shadow-lg"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;img src="https://wildlife.org/wp-content/uploads/2017/01/monarch.png" alt="Monarch Butterfly" class="w-full h-auto object-cover"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>&lt;main class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-4 text-center"&gt;Introduction to Monarchs&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-4"&gt;Monarch butterflies (&lt;span class="italic"&gt;Danaus plexippus&lt;/span&gt;) are one of North America's most recognizable and beloved insects, celebrated for their striking orange and black patterns and their incredible long-distance journeys. They're not just beautiful; they're also vital pollinators.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h3 class="text-xl font-bold text-[#FF6B6B] mb-2"&gt;Origins and Evolution 🦋&lt;/h3&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-4"&gt;Monarchs are believed to have originated in the Americas, with their closest relatives found in tropical regions. Their evolutionary history is deeply tied to &lt;strong&gt;milkweed plants&lt;/strong&gt; (&lt;span class="italic"&gt;Asclepias&lt;/span&gt; species), which are native to North and South America. Over millions of years, monarchs developed a unique adaptation to feed exclusively on milkweed as caterpillars, allowing them to sequester the plant's toxic compounds, making them unpalatable to most predators. This &lt;strong&gt;co-evolutionary relationship&lt;/strong&gt; is central to their survival.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h3 class="text-xl font-bold text-[#FF6B6B] mb-2"&gt;The Epic Migration Journey 🗺️&lt;/h3&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-4"&gt;What truly sets the monarch apart is its &lt;strong&gt;phenomenal annual migration&lt;/strong&gt;. Unlike birds, which migrate as individuals, monarchs undertake a &lt;strong&gt;multi-generational journey&lt;/strong&gt;.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;ul class="list-disc list-inside text-gray-700 space-y-2 mb-4"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Spring and Summer Generations:&lt;/strong&gt; Starting in early spring, monarchs begin their northward migration from overwintering sites. Females lay eggs on milkweed plants along the way, and these eggs hatch into caterpillars, then pupate, and emerge as adult butterflies. These first few generations live for only about 2-6 weeks, continuing the journey north, each generation pushing further.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;The "Super Generation" (Fall Migration):&lt;/strong&gt; The final generation of the summer is different. Triggered by changes in daylight and temperature, these butterflies are born in a state of &lt;strong&gt;reproductive diapause&lt;/strong&gt;, meaning they don't mature sexually right away. Instead, they focus all their energy on building fat reserves for a monumental journey south.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Overwintering Sites:&lt;/strong&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;ul class="list-circle list-inside ml-4 space-y-1"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;li&gt;&lt;strong&gt;Eastern Monarchs:&lt;/strong&gt; Millions of eastern monarchs fly up to &lt;strong&gt;3,000 miles&lt;/strong&gt; from as far as Canada and the U.S. Midwest to congregate in a few specific oyamel fir forests in the mountains of &lt;strong&gt;central Mexico&lt;/strong&gt;. They cluster tightly on trees to conserve warmth and energy.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;li&gt;&lt;strong&gt;Western Monarchs:&lt;/strong&gt; Western monarchs, found west of the Rocky Mountains, typically migrate shorter distances to overwinter in groves of eucalyptus, Monterey cypress, and other trees along the &lt;strong&gt;coast of California&lt;/strong&gt;.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/ul&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Return Journey:&lt;/strong&gt; In late winter/early spring, the overwintering generation becomes reproductively active. They begin the journey north, laying eggs on the first emerging milkweed. These eggs become the first generation of the new year, continuing the cycle.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/ul&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700"&gt;This complex, multi-generational migration is one of nature's most incredible phenomena, but it's also what makes monarchs particularly vulnerable to habitat loss and other threats along their vast migratory corridors.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8 flex flex-col md:flex-row items-center gap-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="text-center md:text-left flex-1"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-3"&gt;A Drastic Decline&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;p class="text-gray-700 mb-4"&gt;Over the past two decades, the monarch butterfly population has plummeted. This iconic species, known for its incredible 3,000-mile migration, is facing unprecedented threats that have pushed it to the brink.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="text-7xl md:text-8xl font-black text-[#FFC700]"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>90%</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;p class="text-lg font-bold text-gray-800"&gt;Population Lost&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="mt-8 text-center"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;button id="generateFactBtn" class="bg-[#5B5F97] text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-[#FF6B6B] transition duration-300 ease-in-out"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>Get a ✨ Monarch Fact ✨</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/button&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;div id="factOutput" class="mt-4 p-3 bg-gray-100 rounded-lg text-gray-800 italic"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>Click for an amazing fact!</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;div id="factLoadingIndicator" class="hidden flex justify-center items-center mt-2"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;div class="spinner mr-2"&gt;&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>Generating fact...</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="flex-1 w-full max-w-sm"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="chart-container"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;canvas id="populationDeclineChart"&gt;&lt;/canvas&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="bg-white rounded-lg shadow-lg p-6 md:p-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-4 text-center"&gt;Threats to Survival&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-6 text-center"&gt;Multiple factors contribute to the monarch's decline, primarily driven by human activity. The loss of their essential habitat is the most significant challenge they face.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="chart-container h-80 md:h-96 max-h-[450px]"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;canvas id="threatsChart"&gt;&lt;/canvas&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="bg-white rounded-lg shadow-lg p-6 md:p-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-6 text-center"&gt;The Monarch Life Cycle&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-8 text-center"&gt;The monarch undergoes a complete metamorphosis, a remarkable transformation that is entirely dependent on a single plant: &lt;span style="font-weight: bold; color: #FFC700;"&gt;milkweed&lt;/span&gt;&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;img src="https://outdoornebraska.gov/wp-content/uploads/2023/03/monarch_male_female.png" alt="Adult Monarch Butterfly" class="w-full max-w-md mx-auto mb-8 rounded-lg shadow-md"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="relative flex flex-col items-center space-y-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="relative z-10 w-full p-4 bg-[#FFC700] bg-opacity-20 rounded-lg border-l-4 border-[#FFC700]"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;p class="font-bold text-lg"&gt;1. Egg 🥚&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;p&gt;Females lay tiny, off-white eggs exclusively on milkweed leaves.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="flow-arrow h-8 top-full left-1/2 -translate-x-1/2 -mt-8"&gt;&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="relative z-10 w-full p-4 bg-[#FF6B6B] bg-opacity-20 rounded-lg border-l-4 border-[#FF6B6B]"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;p class="font-bold text-lg"&gt;2. Larva (Caterpillar) 🐛&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;p&gt;This is the stage where the monarch &lt;strong&gt;eats milkweed&lt;/strong&gt;. The caterpillar hatches and consumes milkweed leaves voraciously, growing rapidly through several molts. Luckily, milkweed contains compounds that make the caterpillars and adult butterflies taste bad to most predators, providing a natural defense!&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="flow-arrow h-8 top-full left-1/2 -translate-x-1/2 -mt-8"&gt;&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="relative z-10 w-full p-4 bg-[#5B5F97] bg-opacity-20 rounded-lg border-l-4 border-[#5B5F97]"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;p class="font-bold text-lg"&gt;3. Pupa (Chrysalis) ✨&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;p&gt;It forms a beautiful green chrysalis, where the transformation occurs.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                     </span>&lt;div class="flow-arrow h-8 top-full left-1/2 -translate-x-1/2 -mt-8"&gt;&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="relative z-10 w-full p-4 bg-green-500 bg-opacity-20 rounded-lg border-l-4 border-green-500"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;p class="font-bold text-lg"&gt;4. Adult Butterfly 🦋&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;p&gt;The butterfly emerges, ready to feed on nectar from various flowers (not milkweed leaves) and continue the cycle.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-[#5B5F97] text-white rounded-lg shadow-lg p-6 md:p-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-3xl font-black text-center mb-2 text-[#FFC700]"&gt;The Milkweed Connection&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-center text-lg max-w-3xl mx-auto"&gt;Milkweed is the nursery, shelter and its only food source; monarch caterpillars depend on 100% on milkweed. No milkweed means no monarchs. &lt;span style="color: #FF6B6B; font-weight: bold;"&gt;Planting NATIVE milkweed&lt;/span&gt; is the single most important action we can take to help save this species. Since we are in California, the &lt;strong&gt;SHOWY milkweed&lt;/strong&gt; is ideal and the second would be the &lt;strong&gt;BROADLEAF milkweed&lt;/strong&gt;. &lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#FF6B6B] mb-4 text-center"&gt;The Dangers of Non-Native Milkweed&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-8 text-center"&gt;While any milkweed might seem helpful, &lt;strong&gt;non-native varieties, particularly tropical milkweed&lt;/strong&gt; (Asclepias curassavica) picture shown below, are often easier to find and grow quickly, which is why plant sellers prefer them. However, they can actually &lt;strong&gt;harm monarchs&lt;/strong&gt;. Unlike native milkweeds that die back in winter, tropical milkweed often persists, disrupting the monarch's natural migratory cues. If they stick around and continue to breed, the caterpillars can develop a lethal parasite (&lt;span class="italic"&gt;Ophryocystis elektroscirrha&lt;/span&gt; (OE)). If you have tropical milkweed, the most important thing is to &lt;strong&gt;cut it back by December&lt;/strong&gt;. It won’t die back on its own in many locations.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;img src="https://hydrangeasblue.com/wp-content/uploads/2022/03/no-tropical-milkweed.jpg" alt="Tropical Milkweed Warning" class="w-full max-w-xl mx-auto mb-8 rounded-lg shadow-md"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-center text-xl font-bold text-[#FF6B6B]"&gt;Always choose milkweed species native to your region to ensure the best support for monarch health and migration.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-4 text-center"&gt;Milkweed and Safety: For Pets &amp; Children&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-4 text-center"&gt;While essential for monarchs, milkweed contains cardiac glycosides that can be toxic if ingested in large quantities. It's important to take precautions to ensure the safety of your &lt;strong&gt;pets&lt;/strong&gt; and &lt;strong&gt;small children&lt;/strong&gt;.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;ul class="list-disc list-inside text-gray-700 space-y-2 max-w-xl mx-auto text-left"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Plant with care:&lt;/strong&gt; Consider planting milkweed in areas less accessible to curious pets and young children, such as raised beds or fenced-off sections.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Supervise:&lt;/strong&gt; Always supervise &lt;strong&gt;small children&lt;/strong&gt; and pets in areas where milkweed is growing, especially if they are prone to putting things in their mouths or chewing on plants.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Know the symptoms:&lt;/strong&gt; Be aware of potential signs of poisoning, which can include vomiting, diarrhea, lethargy, and weakness. Contact your veterinarian or poison control immediately if you suspect ingestion by a pet or child.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Educate yourself:&lt;/strong&gt; Research the specific milkweed species native to your area and their known toxicity levels.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/ul&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-center text-lg font-bold text-[#FFC700] mt-6"&gt;Prioritizing both monarch, pet, and child well-being is key to a thriving ecosystem.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-4 text-center"&gt;How to Grow Milkweed from Seed&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-8 text-center"&gt;You can create a monarch sanctuary in your own garden, balcony, or community space. Follow these steps to cultivate the milkweed that monarchs need.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;img src="https://cdn.shopify.com/s/files/1/1740/1449/files/MilkWeed_Header.jpg?v=1638393863" alt="Monarch Butterfly on Milkweed Plant" class="w-full max-w-xl mx-auto mb-8 rounded-lg shadow-md"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="relative flex flex-col items-center"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;div class="bg-gray-100 p-6 rounded-lg shadow-inner h-full"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;div class="text-5xl mb-4"&gt;1️⃣&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;h3 class="text-xl font-bold text-[#FF6B6B] mb-2"&gt;Stratify Your Seeds&lt;/h3&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;p class="text-gray-600"&gt;Most milkweed seeds need a cold period. You can do this naturally by planting in the fall, or artificially by refrigerating seeds in a damp paper towel for 3-6 weeks.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;div class="hidden md:block flow-arrow w-8 left-full top-1/2 -translate-y-1/2 -ml-4 flow-arrow-right"&gt;&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                         </span>&lt;div class="md:hidden flow-arrow h-8 top-full left-1/2 -translate-x-1/2 -mt-4 flow-arrow-down"&gt;&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="relative flex flex-col items-center"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;div class="bg-gray-100 p-6 rounded-lg shadow-inner h-full"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;div class="text-5xl mb-4"&gt;2️⃣&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;h3 class="text-xl font-bold text-[#FFC700] mb-2"&gt;Plant with Care&lt;/h3&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;p class="text-gray-600"&gt;Sow seeds in a sunny spot after the last frost. You can start them indoors 4-8 weeks early for a head start. Ensure your soil is well-draining.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                         </span>&lt;div class="hidden md:block flow-arrow w-8 left-full top-1/2 -translate-y-1/2 -ml-4 flow-arrow-right"&gt;&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                         </span>&lt;div class="md:hidden flow-arrow h-8 top-full left-1/2 -translate-x-1/2 -mt-4 flow-arrow-down"&gt;&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="relative flex flex-col items-center"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;div class="bg-gray-100 p-6 rounded-lg shadow-inner h-full"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;div class="text-5xl mb-4"&gt;3️⃣&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;h3 class="text-xl font-bold text-[#5B5F97] mb-2"&gt;Nurture &amp; Watch&lt;/h3&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;p class="text-gray-600"&gt;Keep the soil moist while seedlings are young. Avoid all pesticides. Soon, you'll provide a vital food source and witness the magic of the monarch life cycle firsthand!&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="mt-10 text-center"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;button id="generateTipBtn" class="bg-[#FF6B6B] text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-[#FFC700] transition duration-300 ease-in-out"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>Get a ✨ Milkweed Planting Tip ✨</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/button&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div id="tipOutput" class="mt-6 p-4 bg-gray-100 rounded-lg text-gray-800 italic"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>Click the button above for an AI-generated tip!</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div id="loadingIndicator" class="hidden flex justify-center items-center mt-4"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;div class="spinner mr-2"&gt;&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>Generating tip...</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-4 text-center"&gt;Nectar Plants for Adult Monarchs (California Bay Area)&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-8 text-center"&gt;While caterpillars need milkweed, adult monarchs rely on a variety of nectar-rich flowers for energy. Planting these native species will provide crucial fuel for their long journeys and breeding cycles.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;ul class="list-disc list-inside text-gray-700 space-y-2 max-w-xl mx-auto text-left"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;California Poppy&lt;/strong&gt; (&lt;span class="italic"&gt;Eschscholzia californica&lt;/span&gt;): A vibrant, drought-tolerant annual that provides early season nectar.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;California Lilac&lt;/strong&gt; (&lt;span class="italic"&gt;Ceanothus&lt;/span&gt; species): Many varieties offer abundant blue or white flowers, attracting numerous pollinators.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Buckwheat&lt;/strong&gt; (&lt;span class="italic"&gt;Eriogonum&lt;/span&gt; species): Diverse and important nectar sources, especially late in the season.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Gum Plant&lt;/strong&gt; (&lt;span class="italic"&gt;Grindelia camporum&lt;/span&gt;): Provides late-season nectar when other flowers are scarce.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Goldenrod&lt;/strong&gt; (&lt;span class="italic"&gt;Solidago californica&lt;/span&gt;): A crucial late-season nectar source for migrating monarchs.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Aster&lt;/strong&gt; (&lt;span class="italic"&gt;Symphyotrichum chilense&lt;/span&gt;): Offers important nectar in late summer and fall.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Sunflower&lt;/strong&gt; (&lt;span class="italic"&gt;Helianthus annuus&lt;/span&gt; - native varieties): Provides abundant pollen and nectar.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/ul&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-center text-lg font-bold text-[#FFC700] mt-6"&gt;A diverse garden with staggered bloom times ensures monarchs have food throughout the year!&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-4 text-center"&gt;How to Propagate Milkweed&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-8 text-center"&gt;Want to grow even more milkweed to share with friends or expand your monarch habitat? Propagating from existing plants is a great way to do it!&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;img src="https://placehold.co/600x350/5B5F97/FFFFFF?text=Milkweed+Propagation" alt="Milkweed Propagation" class="w-full max-w-xl mx-auto mb-8 rounded-lg shadow-md"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;h3 class="font-bold text-xl text-[#FF6B6B] mb-4"&gt;Propagation from Seeds:&lt;/h3&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;ol class="list-decimal list-inside text-gray-700 space-y-4"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;h4 class="font-bold text-lg text-[#FF6B6B]"&gt;Collect Seeds from Pods (Fall):&lt;/h4&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;p&gt;Once milkweed seed pods mature and begin to split in the fall, carefully collect them. Allow them to dry completely. Gently remove the seeds from the fluffy "pappus" (the silky hairs) by rubbing them on a screen or shaking them in a bag with a coin.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;h4 class="font-bold text-lg text-[#FFC700]"&gt;Cold Stratify Seeds (Essential for Native Species):&lt;/h4&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;p&gt;Most &lt;strong&gt;native milkweed seeds&lt;/strong&gt;, including &lt;strong&gt;Showy Milkweed&lt;/strong&gt; and &lt;strong&gt;Broadleaf Milkweed&lt;/strong&gt;, require a period of cold, moist conditions to break dormancy. Place cleaned seeds in a damp paper towel or sand inside a sealed plastic bag and refrigerate for 3-6 weeks before planting.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;h4 class="font-bold text-lg text-[#5B5F97]"&gt;Plant Stratified Seeds (Spring):&lt;/h4&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;p&gt;In spring, after the danger of frost has passed, sow your cold-stratified seeds directly outdoors in a sunny location with well-draining soil, or start them indoors in pots 4-8 weeks before transplanting.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/ol&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;h3 class="font-bold text-xl text-[#FF6B6B] mb-4"&gt;Propagation from Cuttings:&lt;/h3&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;ol class="list-decimal list-inside text-gray-700 space-y-4"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;h4 class="font-bold text-lg text-[#FFC700]"&gt;Stem Cuttings (Growing Season):&lt;/h4&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;p&gt;Take 4-6 inch cuttings from healthy, non-flowering stems (this works for many milkweed species, including &lt;strong&gt;Showy&lt;/strong&gt; and &lt;strong&gt;Broadleaf&lt;/strong&gt;). Remove the lower leaves, leaving only a few at the top. Dip the cut end in rooting hormone (optional) and plant in moist, well-draining potting mix. Keep humid (e.g., with a plastic dome) and out of direct sun until rooted (2-4 weeks).&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;h4 class="font-bold text-lg text-[#5B5F97]"&gt;Root Cuttings (Late Fall/Early Spring - Ideal for Showy Milkweed):&lt;/h4&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;p&gt;For &lt;strong&gt;rhizomatous species&lt;/strong&gt; like &lt;strong&gt;Showy Milkweed&lt;/strong&gt;, carefully dig up a portion of the root in late fall or early spring when dormant. Cut the root into 2-5 inch sections. Replant them horizontally about 1-2 inches deep in well-draining soil. New shoots will emerge in spring.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;h4 class="font-bold text-lg text-green-500"&gt;Care for New Plants:&lt;/h4&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>&lt;p&gt;Keep the soil consistently moist (but not waterlogged) for new cuttings until they are well-established. Protect young plants from pests and ensure they receive plenty of sunlight as they grow.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;/ol&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-center text-lg font-bold text-[#FFC700] mt-8"&gt;Sharing propagated milkweed is a fantastic way to spread monarch habitat!&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8 text-center"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-4"&gt;Natural Enemies of Monarchs&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-4 max-w-2xl mx-auto"&gt;Monarch butterflies face various natural enemies throughout their life cycle, despite the protective toxins they acquire from milkweed. These include:&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;ul class="list-disc list-inside text-gray-700 space-y-2 max-w-xl mx-auto text-left"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Predators:&lt;/strong&gt; Birds (like orioles and grosbeaks), spiders, ants, and some types of beetles (e.g., lady beetles) commonly prey on monarch eggs, caterpillars, pupae, and even adult butterflies. Small mammals like mice can also target overwintering monarchs.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Parasitoids:&lt;/strong&gt; Insects like the &lt;strong&gt;Tachinid fly&lt;/strong&gt; are significant threats. These flies lay eggs on monarch caterpillars; the fly larvae then hatch and consume the caterpillar from the inside, eventually killing it.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;li&gt;&lt;strong&gt;Diseases and Parasites:&lt;/strong&gt; The protozoan parasite &lt;strong&gt;&lt;span class="italic"&gt;Ophryocystis elektroscirrha&lt;/span&gt; (OE)&lt;/strong&gt; is a major concern. Infected monarchs emerge with deformities, reduced lifespans, and impaired flight. OE spores are spread from infected adults to milkweed, which caterpillars then ingest. Other bacteria and viruses can also impact monarch populations.&lt;/li&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/ul&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-center text-lg font-bold text-[#FFC700] mt-6"&gt;Understanding these natural threats helps in developing comprehensive conservation strategies.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8 text-center"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-4"&gt;More Ways to Help Monarchs!&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-8 max-w-2xl mx-auto"&gt;Beyond planting milkweed, there are many other actions you can take to support monarch butterflies and their habitats. Click the button below for more ideas!&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;button id="generateActionBtn" class="bg-[#FF6B6B] text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-[#FFC700] transition duration-300 ease-in-out"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>Get More ✨ Conservation Ideas ✨</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/button&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div id="actionOutput" class="mt-6 p-4 bg-gray-100 rounded-lg text-gray-800 italic"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>Click the button above for more ways to help!</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div id="actionLoadingIndicator" class="hidden flex justify-center items-center mt-4"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;div class="spinner mr-2"&gt;&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>Generating ideas...</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;div class="lg:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8 text-center"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;h2 class="text-2xl font-bold text-[#5B5F97] mb-4"&gt;Monarch Conservation in Action!&lt;/h2&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;p class="text-gray-700 mb-8 max-w-2xl mx-auto"&gt;Watch this video to see monarchs in their natural habitat and learn more about crucial conservation efforts.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;div class="relative w-full max-w-xl mx-auto rounded-lg shadow-md overflow-hidden" style="padding-bottom: 56.25%;"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;video controls class="absolute top-0 left-0 w-full h-full object-cover"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>&lt;source src="Monarch_Butterfly_Conservation_Video.mp4" type="video/mp4"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>Your browser does not support the video tag.</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>&lt;/video&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/main&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>&lt;footer class="text-center mt-12 pt-8 border-t border-gray-300"&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>&lt;p class="text-gray-600"&gt;Your garden can be part of a continental recovery effort. Plant milkweed. Save the monarchs.&lt;/p&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>&lt;/footer&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;script&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>function wrapLabel(str, max_width) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>if (typeof str !== 'string' || str.length &lt;= max_width) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>return str;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const words = str.split(' ');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let lines = [];</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let current_line = '';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>words.forEach(word =&gt; {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>if ((current_line + ' ' + word).length &gt; max_width) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>lines.push(current_line);</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>current_line = word;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>} else {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>current_line = current_line ? current_line + ' ' + word : word;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>});</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>lines.push(current_line);</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>return lines;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const tooltipTitleCallback = (tooltipItems) =&gt; {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const item = tooltipItems[0];</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let label = item.chart.data.labels[item.dataIndex];</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>if (Array.isArray(label)) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>return label.join(' ');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>return label;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>};</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"><span class="Apple-converted-space">        </span></span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const populationDeclineCtx = document.getElementById('populationDeclineChart').getContext('2d');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>new Chart(populationDeclineCtx, {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>type: 'doughnut',</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>data: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>labels: ['Population Lost', 'Remaining Population'],</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>datasets: [{</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>data: [90, 10],</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>backgroundColor: ['#FFC700', '#DDDDDD'],</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>borderColor: ['#FFC700', '#DDDDDD'],</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>borderWidth: 1</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>}]</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>},</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>options: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>responsive: true,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>maintainAspectRatio: false,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>cutout: '70%',</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>plugins: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>legend: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>display: false</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>},</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>tooltip: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>callbacks: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>title: tooltipTitleCallback</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>});</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const threatsCtx = document.getElementById('threatsChart').getContext('2d');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const originalThreatLabels = ['Habitat Loss (Milkweed Decline)', 'Pesticides &amp; Herbicides', 'Climate Change', 'Natural Enemies &amp; Disease'];</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const wrappedThreatLabels = originalThreatLabels.map(label =&gt; wrapLabel(label, 16));</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>new Chart(threatsCtx, {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>type: 'bar',</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>data: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>labels: wrappedThreatLabels,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>datasets: [{</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>label: 'Impact on Monarchs',</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>data: [85, 65, 50, 30],</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>backgroundColor: ['#FF6B6B', '#FFC700', '#5B5F97', '#9295C2'],</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>borderColor: '#ffffff',</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>borderWidth: 2,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>borderRadius: 5</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>}]</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>},</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>options: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>indexAxis: 'y',</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>responsive: true,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>maintainAspectRatio: false,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>scales: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>x: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>beginAtZero: true,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>grid: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>display: false,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>drawBorder: false,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>},</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>ticks: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>display: false</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>},</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>y: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                         </span>grid: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>display: false,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>drawBorder: false,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>},</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>ticks: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>color: '#3D3D3D',</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>font: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>size: 12,</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                                </span>weight: 'bold'</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>},</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>plugins: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>legend: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>display: false</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>},</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>tooltip: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>callbacks: {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                            </span>title: tooltipTitleCallback</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>});</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const generateTipBtn = document.getElementById('generateTipBtn');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const tipOutput = document.getElementById('tipOutput');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const loadingIndicator = document.getElementById('loadingIndicator');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>generateTipBtn.addEventListener('click', async () =&gt; {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>tipOutput.textContent = '';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>loadingIndicator.classList.remove('hidden');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>generateTipBtn.disabled = true;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let chatHistory = [];</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const prompt = "Provide a unique and actionable tip (1-2 sentences) for successfully growing milkweed or propagating it to help monarch butterflies. Focus on practical advice for a home gardener.";</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>chatHistory.push({ role: "user", parts: [{ text: prompt }] });</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const payload = { contents: chatHistory };</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const apiKey = "";</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let retries = 0;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const maxRetries = 5;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let delay = 1000; // 1 second</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>while (retries &lt; maxRetries) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>try {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>const response = await fetch(apiUrl, {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>method: 'POST',</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>headers: { 'Content-Type': 'application/json' },</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>body: JSON.stringify(payload)</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>});</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>if (response.status === 429) { // Too Many Requests</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>retries++;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>await new Promise(res =&gt; setTimeout(res, delay));</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>delay *= 2; // Exponential backoff</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>continue;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>const result = await response.json();</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>if (result.candidates &amp;&amp; result.candidates.length &gt; 0 &amp;&amp;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>result.candidates[0].content &amp;&amp; result.candidates[0].content.parts &amp;&amp;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>result.candidates[0].content.parts.length &gt; 0) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>const text = result.candidates[0].content.parts[0].text;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>tipOutput.textContent = text;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>} else {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>tipOutput.textContent = 'Failed to generate tip. Please try again.';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>break; // Exit loop on success</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>} catch (error) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>retries++;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>if (retries &lt; maxRetries) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>await new Promise(res =&gt; setTimeout(res, delay));</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>delay *= 2;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>} else {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>tipOutput.textContent = 'Error generating tip. Please check your connection.';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>loadingIndicator.classList.add('hidden');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>generateTipBtn.disabled = false;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>});</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const generateFactBtn = document.getElementById('generateFactBtn');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const factOutput = document.getElementById('factOutput');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const factLoadingIndicator = document.getElementById('factLoadingIndicator');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>generateFactBtn.addEventListener('click', async () =&gt; {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>factOutput.textContent = '';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>factLoadingIndicator.classList.remove('hidden');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>generateFactBtn.disabled = true;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let chatHistory = [];</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const prompt = "Provide a unique and interesting fact (1-2 sentences) about monarch butterflies.";</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>chatHistory.push({ role: "user", parts: [{ text: prompt }] });</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const payload = { contents: chatHistory };</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const apiKey = "";</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let retries = 0;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const maxRetries = 5;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let delay = 1000; // 1 second</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>while (retries &lt; maxRetries) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>try {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>const response = await fetch(apiUrl, {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>method: 'POST',</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>headers: { 'Content-Type': 'application/json' },</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>body: JSON.stringify(payload)</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>});</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>if (response.status === 429) { // Too Many Requests</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>retries++;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>await new Promise(res =&gt; setTimeout(res, delay));</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>delay *= 2; // Exponential backoff</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>continue;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>const result = await response.json();</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>if (result.candidates &amp;&amp; result.candidates.length &gt; 0 &amp;&amp;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>result.candidates[0].content &amp;&amp; result.candidates[0].content.parts &amp;&amp;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>result.candidates[0].content.parts.length &gt; 0) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>const text = result.candidates[0].content.parts[0].text;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>factOutput.textContent = text;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>} else {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>factOutput.textContent = 'Failed to generate fact. Please try again.';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>break; // Exit loop on success</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>} catch (error) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>retries++;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>if (retries &lt; maxRetries) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>await new Promise(res =&gt; setTimeout(res, delay));</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>delay *= 2;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>} else {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>factOutput.textContent = 'Error generating fact. Please check your connection.';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>factLoadingIndicator.classList.add('hidden');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>generateFactBtn.disabled = false;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>});</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const generateActionBtn = document.getElementById('generateActionBtn');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const actionOutput = document.getElementById('actionOutput');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>const actionLoadingIndicator = document.getElementById('actionLoadingIndicator');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>generateActionBtn.addEventListener('click', async () =&gt; {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>actionOutput.textContent = '';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>actionLoadingIndicator.classList.remove('hidden');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>generateActionBtn.disabled = true;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let chatHistory = [];</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const prompt = "Provide 3-4 concise, actionable ideas (each 1-2 sentences) for how an individual can help monarch butterfly conservation, beyond just planting milkweed. Format as a bulleted list.";</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>chatHistory.push({ role: "user", parts: [{ text: prompt }] });</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const payload = { contents: chatHistory };</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const apiKey = "";</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let retries = 0;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>const maxRetries = 5;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>let delay = 1000; // 1 second</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>while (retries &lt; maxRetries) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>try {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>const response = await fetch(apiUrl, {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>method: 'POST',</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>headers: { 'Content-Type': 'application/json' },</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>body: JSON.stringify(payload)</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>});</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>if (response.status === 429) { // Too Many Requests</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>retries++;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>await new Promise(res =&gt; setTimeout(res, delay));</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>delay *= 2; // Exponential backoff</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>continue;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>const result = await response.json();</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>if (result.candidates &amp;&amp; result.candidates.length &gt; 0 &amp;&amp;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>result.candidates[0].content &amp;&amp; result.candidates[0].content.parts &amp;&amp;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>result.candidates[0].content.parts.length &gt; 0) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>const text = result.candidates[0].content.parts[0].text;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>actionOutput.innerHTML = text.replace(/\n/g, '&lt;br&gt;'); // Display as HTML list</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>} else {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>actionOutput.textContent = 'Failed to generate ideas. Please try again.';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>break; // Exit loop on success</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>} catch (error) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>retries++;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>if (retries &lt; maxRetries) {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>await new Promise(res =&gt; setTimeout(res, delay));</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>delay *= 2;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>} else {</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                        </span>actionOutput.textContent = 'Error generating ideas. Please check your connection.';</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                    </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">                </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>}</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>actionLoadingIndicator.classList.add('hidden');</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">            </span>generateActionBtn.disabled = false;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">        </span>});</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1">&lt;/body&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000"><span class="s1">&lt;/html&gt;</span></h1>
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Helvetica Neue'; -webkit-text-stroke: #000000; min-height: 28.0px"><span class="s1"></span><br></h1>
 </body>
 </html>
-
